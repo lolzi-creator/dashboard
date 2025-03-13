@@ -4,6 +4,17 @@ import api from './api';
 // Set to false to use real API
 const MOCK_MODE = false;
 
+// Get all wallets with balances for a batch
+export const getBatchWallets = (batchId) => {
+    if (!batchId) {
+        console.error('getBatchWallets called without required parameter');
+        return Promise.reject(new Error('Batch ID is required'));
+    }
+
+    console.log(`Fetching wallet details for batch: ${batchId}`);
+    return api.get(`/wallets/batch/${batchId}`);
+};
+
 // Get all wallet batches
 export const getWalletBatches = () => {
     if (MOCK_MODE) {

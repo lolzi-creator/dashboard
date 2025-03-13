@@ -7,8 +7,11 @@ import BoostDetails from './components/Boosts/BoostDetails';
 import Transactions from './pages/Transactions';
 import Wallets from './pages/Wallets';
 import Settings from './pages/Settings';
-import FundingStatus from './components/Wallets/FundingStatus'; // Make sure this import is correct
+import FundingStatus from './components/Wallets/FundingStatus';
+import Ranking from './pages/Ranking'; // New import
+import RankingJobDetails from './components/Ranking/RankingJobDetails'; // New import
 import './styles.css';
+
 function App() {
     return (
         <Router>
@@ -21,6 +24,9 @@ function App() {
                     <Route path="/wallets" element={<Wallets />} />
                     <Route path="/wallets/funding/:fundingId" element={<FundingStatus />} />
                     <Route path="/settings" element={<Settings />} />
+                    {/* New routes for Ranking */}
+                    <Route path="/ranking" element={<Ranking />} />
+                    <Route path="/ranking/:jobId" element={<RankingJobDetails />} />
                 </Routes>
             </Layout>
         </Router>

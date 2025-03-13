@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getWalletBatches, getWalletDetails } from '../../api/walletService';
+import { getWalletBatches, getBatchWallets } from '../../api/walletService';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 const WalletList = ({ onWalletSelect }) => {
@@ -8,6 +8,7 @@ const WalletList = ({ onWalletSelect }) => {
     const [wallets, setWallets] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [batchLoading, setBatchLoading] = useState({});
 
     useEffect(() => {
         const fetchBatches = async () => {
@@ -37,23 +38,30 @@ const WalletList = ({ onWalletSelect }) => {
 
         if (!wallets[batchId]) {
             try {
-                // In a real implementation, this would fetch wallets for this batch
-                // For now, we'll mock some wallet data
-                const batch = batches.find(b => b.id === batchId);
+                setBatchLoading(prev => ({ ...prev, [batchId]: true }));
 
-                // Mock wallet data for this batch
-                const mockWallets = Array.from({ length: 3 }, (_, i) => ({
-                    id: `wallet-${batchId}-${i}`,
-                    address: `sol-wallet-${batchId}-${i}`,
-                    balance: (Math.random() * 2).toFixed(3)
-                }));
+                // Fetch the wallet balances for this batch
+                const response = await getBatchWallets(batchId);
 
-                setWallets(prev => ({
-                    ...prev,
-                    [batchId]: mockWallets
-                }));
+                if (response.success && response.wallets) {
+                    setWallets(prev => ({
+                        ...prev,
+                        [batchId]: response.wallets
+                    }));
+                } else {
+                    throw new Error(response.message || 'Failed to load wallet data');
+                }
+
+                setBatchLoading(prev => ({ ...prev, [batchId]: false }));
             } catch (err) {
                 console.error(`Error loading wallets for batch ${batchId}:`, err);
+                setBatchLoading(prev => ({ ...prev, [batchId]: false }));
+
+                // Set error state for this batch
+                setWallets(prev => ({
+                    ...prev,
+                    [batchId]: 'error'
+                }));
             }
         }
     };
@@ -79,14 +87,21 @@ const WalletList = ({ onWalletSelect }) => {
                                 <div className="batch-meta">
                                     <span>{batch.wallets.length} wallets</span>
                                     <span className="expand-icon">
-                    {expandedBatch === batch.id ? '▼' : '▶'}
-                  </span>
+                                        {expandedBatch === batch.id ? '▼' : '▶'}
+                                    </span>
                                 </div>
                             </div>
 
                             {expandedBatch === batch.id && (
                                 <div className="batch-wallets">
-                                    {wallets[batch.id] ? (
+                                    {batchLoading[batch.id] ? (
+                                        <div className="loading-spinner-small">
+                                            <div className="spinner-small"></div>
+                                            <span>Loading wallets...</span>
+                                        </div>
+                                    ) : wallets[batch.id] === 'error' ? (
+                                        <div className="error-message">Error loading wallet data</div>
+                                    ) : wallets[batch.id] ? (
                                         <table className="data-table">
                                             <thead>
                                             <tr>

@@ -20,6 +20,11 @@ const Sidebar = () => {
                         </NavLink>
                     </li>
                     <li>
+                        <NavLink to="/ranking" className={({ isActive }) => isActive ? 'active' : ''}>
+                            DEX Ranking
+                        </NavLink>
+                    </li>
+                    <li>
                         <NavLink to="/transactions" className={({ isActive }) => isActive ? 'active' : ''}>
                             Transactions
                         </NavLink>
