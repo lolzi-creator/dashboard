@@ -9,7 +9,6 @@ import Wallets from './pages/Wallets';
 import Settings from './pages/Settings';
 import FundingStatus from './components/Wallets/FundingStatus'; // Make sure this import is correct
 import './styles.css';
- //<Route path="/settings" element={<Settings />} />
 function App() {
     return (
         <Router>
@@ -21,6 +20,7 @@ function App() {
                     <Route path="/transactions" element={<Transactions />} />
                     <Route path="/wallets" element={<Wallets />} />
                     <Route path="/wallets/funding/:fundingId" element={<FundingStatus />} />
+                    <Route path="/settings" element={<Settings />} />
                 </Routes>
             </Layout>
         </Router>

@@ -1,5 +1,5 @@
 import api from './api';
-const MOCK_MODE = true;
+const MOCK_MODE = false;
 
 // Get all active boosts
 export const getActiveBoosts = () => {

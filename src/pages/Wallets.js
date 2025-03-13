@@ -1,3 +1,4 @@
+// Fix for Wallets.js page - make sure batchId is being passed correctly
 import React, { useState } from 'react';
 import WalletList from '../components/Wallets/WalletList';
 import WalletDetails from '../components/Wallets/WalletDetails';
@@ -12,6 +13,7 @@ const Wallets = () => {
 
     // Handle wallet selection
     const handleWalletSelect = (walletId, batchId) => {
+        console.log(`Selected wallet ${walletId} from batch ${batchId}`);
         setSelectedWallet(walletId);
         setSelectedBatch(batchId);
         setActiveTab('details');
@@ -22,6 +24,7 @@ const Wallets = () => {
         setActiveTab(tab);
         if (tab !== 'details') {
             setSelectedWallet(null);
+            setSelectedBatch(null);
         }
     };
 
@@ -38,7 +41,7 @@ const Wallets = () => {
                 >
                     Wallet Batches
                 </button>
-                {selectedWallet && (
+                {selectedWallet && selectedBatch && (
                     <button
                         className={activeTab === 'details' ? 'active' : ''}
                         onClick={() => changeTab('details')}
@@ -71,7 +74,7 @@ const Wallets = () => {
                     <WalletList onWalletSelect={handleWalletSelect} />
                 )}
 
-                {activeTab === 'details' && selectedWallet && (
+                {activeTab === 'details' && selectedWallet && selectedBatch && (
                     <WalletDetails walletId={selectedWallet} batchId={selectedBatch} />
                 )}
 

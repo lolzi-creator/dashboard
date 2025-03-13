@@ -20,21 +20,13 @@ export const getWalletBatches = () => {
 
 // Get wallet details
 export const getWalletDetails = (walletId, batchId) => {
-    if (MOCK_MODE) {
-        return Promise.resolve({
-            success: true,
-            wallet: {
-                id: walletId,
-                address: `sol-wallet-${walletId}`,
-                balance: 0.25,
-                tokens: [
-                    { symbol: 'SOL', balance: 0.25 },
-                    { symbol: 'USDC', balance: 10.5 },
-                    { symbol: 'TOKEN', balance: 125 }
-                ]
-            }
-        });
+    if (!walletId || !batchId) {
+        console.error('getWalletDetails called without required parameters');
+        return Promise.reject(new Error('Wallet ID and batch ID are required'));
     }
+
+    console.log(`Calling API with walletId=${walletId}, batchId=${batchId}`);
+
     return api.get(`/wallets/details?walletId=${walletId}&batchId=${batchId}`);
 };
 

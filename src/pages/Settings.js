@@ -1,8 +1,6 @@
-// src/pages/Settings.js - Complete Settings Page
-/*
 import React, { useState, useEffect } from 'react';
-import { getSettings, updateSettings } from '../api/settingsService';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import { getSettings, updateSettings } from '../api/settingsService';
 
 const Settings = () => {
     const [loading, setLoading] = useState(true);
@@ -50,25 +48,19 @@ const Settings = () => {
             try {
                 setLoading(true);
 
-                // In a real implementation, this would fetch from backend
-                // For now, we'll simulate a successful fetch with current state
-                // const response = await getSettings();
+                // Get settings from API
+                const response = await getSettings();
 
-                // Simulate a response
-                const response = {
-                    api: { ...apiSettings },
-                    boost: { ...boostSettings },
-                    jupiter: { ...jupiterSettings },
-                    notification: { ...notificationSettings },
-                    ui: { ...uiSettings }
-                };
-
-                // Update states with fetched settings
-                setApiSettings(response.api);
-                setBoostSettings(response.boost);
-                setJupiterSettings(response.jupiter);
-                setNotificationSettings(response.notification);
-                setUiSettings(response.ui);
+                if (response.success) {
+                    // Update states with fetched settings
+                    if (response.settings.api) setApiSettings(response.settings.api);
+                    if (response.settings.boost) setBoostSettings(response.settings.boost);
+                    if (response.settings.jupiter) setJupiterSettings(response.settings.jupiter);
+                    if (response.settings.notification) setNotificationSettings(response.settings.notification);
+                    if (response.settings.ui) setUiSettings(response.settings.ui);
+                } else {
+                    setError('Failed to load settings: ' + response.message);
+                }
 
                 setLoading(false);
             } catch (err) {
@@ -98,17 +90,19 @@ const Settings = () => {
                 ui: uiSettings
             };
 
-            // In a real implementation, this would save to backend
-            // const response = await updateSettings(allSettings);
+            // Save settings to backend
+            const response = await updateSettings(allSettings);
 
-            // Simulate successful save
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            if (response.success) {
+                setSuccess('Settings saved successfully!');
+
+                // Clear success message after 3 seconds
+                setTimeout(() => setSuccess(null), 3000);
+            } else {
+                setError(`Failed to save settings: ${response.message}`);
+            }
 
             setSaving(false);
-            setSuccess('Settings saved successfully!');
-
-            // Clear success message after 3 seconds
-            setTimeout(() => setSuccess(null), 3000);
         } catch (err) {
             setError(`Error saving settings: ${err.message}`);
             setSaving(false);
@@ -156,7 +150,7 @@ const Settings = () => {
         const { name, value, type, checked } = e.target;
         setUiSettings(prev => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : type === 'number' ? parseFloat(value) : value
+            [name]: type === 'checkbox' ? checked : type === 'number' ? parseInt(value) : value
         }));
     };
 
@@ -224,7 +218,7 @@ const Settings = () => {
             {success && <div className="success-message">{success}</div>}
 
             <form onSubmit={handleSubmit}>
-                <div className="settings-section">
+                <div className="settings-section card">
                     <h2>API Settings</h2>
                     <div className="form-group">
                         <label htmlFor="apiUrl">API URL:</label>
@@ -253,7 +247,7 @@ const Settings = () => {
                     </div>
                 </div>
 
-                <div className="settings-section">
+                <div className="settings-section card">
                     <h2>Boost Settings</h2>
                     <div className="form-grid">
                         <div className="form-group">
@@ -334,7 +328,7 @@ const Settings = () => {
                     </div>
                 </div>
 
-                <div className="settings-section">
+                <div className="settings-section card">
                     <h2>Jupiter Settings</h2>
                     <div className="form-group">
                         <label htmlFor="defaultSlippage">Default Slippage (%):</label>
@@ -378,7 +372,7 @@ const Settings = () => {
                     </div>
                 </div>
 
-                <div className="settings-section">
+                <div className="settings-section card">
                     <h2>Notification Settings</h2>
                     <div className="form-group checkbox-group">
                         <label className="checkbox-label">
@@ -449,7 +443,7 @@ const Settings = () => {
                     </div>
                 </div>
 
-                <div className="settings-section">
+                <div className="settings-section card">
                     <h2>UI Settings</h2>
                     <div className="form-group">
                         <label htmlFor="refreshInterval">Dashboard Refresh Interval (seconds):</label>
@@ -508,4 +502,3 @@ const Settings = () => {
 };
 
 export default Settings;
-*/
