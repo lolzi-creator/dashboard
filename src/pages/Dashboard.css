@@ -1,0 +1,281 @@
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.dashboard-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+    color: #f8fafc;
+}
+
+.subtitle {
+    color: #94a3b8;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto auto;
+    gap: 1.5rem;
+}
+
+.volume-progress {
+    grid-column: 1 / -1;
+}
+
+.card {
+    background-color: #1e293b;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #334155;
+}
+
+.card h2 {
+    color: #f8fafc;
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+}
+
+.progress-container {
+    margin-top: 1.5rem;
+}
+
+.modern-progress {
+    height: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3a86ff 0%, #61a0ff 100%);
+    border-radius: 0.5rem;
+    transition: width 0.5s ease-out;
+}
+
+.progress-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.progress-label {
+    font-weight: 600;
+    color: #f8fafc;
+}
+
+.progress-values {
+    color: #94a3b8;
+    font-size: 0.875rem;
+}
+
+.chart-container {
+    height: 250px;
+    position: relative;
+}
+
+.doughnut-chart {
+    height: 100%;
+}
+
+.transactions-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background-color: #273345;
+    transition: background-color 0.2s;
+}
+
+.transaction-item:hover {
+    background-color: #334155;
+}
+
+.transaction-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    margin-right: 0.75rem;
+    background-color: #1e293b;
+}
+
+.tx-icon {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.tx-icon.buy {
+    color: #06d6a0;
+}
+
+.tx-icon.sell {
+    color: #ef476f;
+}
+
+.transaction-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.transaction-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transaction-amount {
+    font-weight: 600;
+    color: #f8fafc;
+}
+
+.transaction-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.buy-text {
+    color: #06d6a0;
+    font-weight: 600;
+}
+
+.sell-text {
+    color: #ef476f;
+    font-weight: 600;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.view-all {
+    color: #3a86ff;
+    font-size: 0.875rem;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.view-all:hover {
+    text-decoration: underline;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: #94a3b8;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Skeleton loading animations */
+.chart-skeleton {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #334155 0%, #475569 50%, #334155 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 0.5rem;
+}
+
+.transactions-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.transaction-skeleton-row {
+    height: 4rem;
+    background: linear-gradient(90deg, #334155 0%, #475569 50%, #334155 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 0.5rem;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .header-actions {
+        width: 100%;
+    }
+
+    .header-actions .button {
+        width: 100%;
+        text-align: center;
+    }
+}

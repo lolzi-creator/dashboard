@@ -1,0 +1,236 @@
+/* Additional modern styles */
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Apply animations to elements */
+.metric-card {
+    animation: fadeIn 0.5s ease-out;
+    animation-fill-mode: both;
+}
+
+.metric-card:nth-child(1) { animation-delay: 0.1s; }
+.metric-card:nth-child(2) { animation-delay: 0.2s; }
+.metric-card:nth-child(3) { animation-delay: 0.3s; }
+.metric-card:nth-child(4) { animation-delay: 0.4s; }
+
+.progress-card, .chart-card, .transactions-card {
+    animation: fadeIn 0.5s ease-out;
+    animation-delay: 0.5s;
+    animation-fill-mode: both;
+}
+
+/* Navigation styling */
+.menu-button {
+    background: none;
+    border: none;
+    color: var(--color-text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-right: 1rem;
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .menu-button {
+        display: block;
+    }
+}
+
+/* Transaction list styles */
+.transactions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    height: calc(100% - 3rem);
+    overflow-y: auto;
+}
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background-color: rgba(15, 23, 42, 0.5);
+    transition: background-color 0.2s;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.transaction-item:hover {
+    background-color: rgba(30, 41, 59, 0.8);
+}
+
+.transaction-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    margin-right: 0.75rem;
+    background-color: var(--color-bg-secondary);
+}
+
+.buy-icon {
+    color: var(--color-green);
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.sell-icon {
+    color: var(--color-red);
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.transaction-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.transaction-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transaction-amount {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.transaction-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+.transaction-status {
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-full);
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.transaction-status.success {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--color-green);
+}
+
+.transaction-status.failed {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--color-red);
+}
+
+/* Loading spinner with better styling */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(59, 130, 246, 0.2);
+    border-radius: 50%;
+    border-top-color: var(--color-blue);
+    animation: spin 1s ease-in-out infinite;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Improved scrollbars for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg-primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-bg-accent);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+/* Enhanced responsive behavior */
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dashboard-header .button {
+        margin-top: 1rem;
+        width: 100%;
+    }
+
+    .header {
+        padding: 1rem;
+    }
+
+    .header-left h1 {
+        font-size: 1.25rem;
+    }
+}
+
+/* Tooltip styling */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    box-shadow: var(--shadow-md);
+    font-size: 0.75rem;
+}
+
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
