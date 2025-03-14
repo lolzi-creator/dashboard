@@ -4,6 +4,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getRankingJob, getRankingJobLogs, stopRankingJob } from '../../api/rankingService';
 import StatusBadge from '../common/StatusBadge';
 import LoadingSpinner from '../common/LoadingSpinner';
+import { Line, Bar } from 'react-chartjs-2';
+import { Chart, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
+
+// Register Chart.js components
+Chart.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
 const RankingJobDetails = () => {
     const { jobId } = useParams();
@@ -11,6 +16,7 @@ const RankingJobDetails = () => {
 
     const [job, setJob] = useState(null);
     const [logs, setLogs] = useState([]);
+    const [chartData, setChartData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('overview');
@@ -28,6 +34,9 @@ const RankingJobDetails = () => {
                 const logsData = await getRankingJobLogs(jobId);
                 setLogs(logsData.logs || []);
 
+                // Prepare chart data from logs
+                prepareChartData(logsData.logs || []);
+
                 setLoading(false);
             } catch (err) {
                 setError(err.message);
@@ -41,6 +50,100 @@ const RankingJobDetails = () => {
         const interval = setInterval(fetchData, 20000);
         return () => clearInterval(interval);
     }, [jobId]);
+
+    const prepareChartData = (logs) => {
+        if (!logs || logs.length === 0) return;
+
+        // Filter only success logs for transactions
+        const successLogs = logs.filter(log => log.type === 'success');
+
+        // Group logs by hour
+        const logsByHour = {};
+        const buyVsSell = { buy: 0, sell: 0 };
+
+        successLogs.forEach(log => {
+            // Count buys vs sells
+            if (log.isBuy) {
+                buyVsSell.buy++;
+            } else {
+                buyVsSell.sell++;
+            }
+
+            // Group by hour for time-based chart
+            const timestamp = new Date(log.timestamp);
+            const hour = timestamp.getHours();
+
+            if (!logsByHour[hour]) {
+                logsByHour[hour] = { count: 0, timestamp };
+            }
+
+            logsByHour[hour].count++;
+        });
+
+        // Sort hours
+        const sortedHours = Object.keys(logsByHour).sort((a, b) => a - b);
+
+        // Create time-based data
+        const timeLabels = sortedHours.map(hour => `${hour}:00`);
+        const transactionCounts = sortedHours.map(hour => logsByHour[hour].count);
+
+        // Success rate data
+        const totalTxs = job ? job.transactionCount : 0;
+        const successRate = job && totalTxs > 0 ?
+            (job.successfulTransactions / totalTxs * 100) : 0;
+        const failRate = totalTxs > 0 ? 100 - successRate : 0;
+
+        setChartData({
+            transactions: {
+                labels: timeLabels,
+                datasets: [
+                    {
+                        label: 'Transactions per Hour',
+                        data: transactionCounts,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.4
+                    }
+                ]
+            },
+            successRate: {
+                labels: ['Success', 'Failed'],
+                datasets: [
+                    {
+                        label: 'Transaction Success Rate',
+                        data: [successRate, failRate],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(255, 99, 132, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }
+                ]
+            },
+            buyVsSell: {
+                labels: ['Buy', 'Sell'],
+                datasets: [
+                    {
+                        label: 'Buy vs Sell Transactions',
+                        data: [buyVsSell.buy, buyVsSell.sell],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 159, 64, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }
+                ]
+            }
+        });
+    };
 
     const handleStop = async () => {
         if (window.confirm('Are you sure you want to stop this ranking job?')) {
@@ -136,6 +239,12 @@ const RankingJobDetails = () => {
                         Overview
                     </button>
                     <button
+                        className={activeTab === 'charts' ? 'active' : ''}
+                        onClick={() => setActiveTab('charts')}
+                    >
+                        Charts
+                    </button>
+                    <button
                         className={activeTab === 'logs' ? 'active' : ''}
                         onClick={() => setActiveTab('logs')}
                     >
@@ -204,6 +313,145 @@ const RankingJobDetails = () => {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'charts' && (
+                        <div className="charts-container">
+                            <h3>Performance Charts</h3>
+
+                            {chartData ? (
+                                <div className="charts-grid">
+                                    <div className="chart-box">
+                                        <h4>Transactions by Hour</h4>
+                                        <div className="chart-wrapper" style={{ height: '250px' }}>
+                                            <Line
+                                                data={chartData.transactions}
+                                                options={{
+                                                    maintainAspectRatio: false,
+                                                    scales: {
+                                                        y: {
+                                                            beginAtZero: true,
+                                                            grid: {
+                                                                color: 'rgba(255, 255, 255, 0.1)'
+                                                            },
+                                                            ticks: {
+                                                                color: '#a8a8bd'
+                                                            }
+                                                        },
+                                                        x: {
+                                                            grid: {
+                                                                color: 'rgba(255, 255, 255, 0.1)'
+                                                            },
+                                                            ticks: {
+                                                                color: '#a8a8bd'
+                                                            }
+                                                        }
+                                                    },
+                                                    plugins: {
+                                                        legend: {
+                                                            labels: {
+                                                                color: '#fff'
+                                                            }
+                                                        },
+                                                        title: {
+                                                            display: true,
+                                                            text: 'Transaction Volume by Hour',
+                                                            color: '#fff'
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="chart-box">
+                                        <h4>Success Rate</h4>
+                                        <div className="chart-wrapper" style={{ height: '250px' }}>
+                                            <Bar
+                                                data={chartData.successRate}
+                                                options={{
+                                                    maintainAspectRatio: false,
+                                                    scales: {
+                                                        y: {
+                                                            beginAtZero: true,
+                                                            max: 100,
+                                                            grid: {
+                                                                color: 'rgba(255, 255, 255, 0.1)'
+                                                            },
+                                                            ticks: {
+                                                                color: '#a8a8bd',
+                                                                callback: (value) => value + '%'
+                                                            }
+                                                        },
+                                                        x: {
+                                                            grid: {
+                                                                color: 'rgba(255, 255, 255, 0.1)'
+                                                            },
+                                                            ticks: {
+                                                                color: '#a8a8bd'
+                                                            }
+                                                        }
+                                                    },
+                                                    plugins: {
+                                                        legend: {
+                                                            display: false
+                                                        },
+                                                        title: {
+                                                            display: true,
+                                                            text: 'Transaction Success Rate',
+                                                            color: '#fff'
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="chart-box">
+                                        <h4>Buy vs Sell Distribution</h4>
+                                        <div className="chart-wrapper" style={{ height: '250px' }}>
+                                            <Bar
+                                                data={chartData.buyVsSell}
+                                                options={{
+                                                    maintainAspectRatio: false,
+                                                    scales: {
+                                                        y: {
+                                                            beginAtZero: true,
+                                                            grid: {
+                                                                color: 'rgba(255, 255, 255, 0.1)'
+                                                            },
+                                                            ticks: {
+                                                                color: '#a8a8bd'
+                                                            }
+                                                        },
+                                                        x: {
+                                                            grid: {
+                                                                color: 'rgba(255, 255, 255, 0.1)'
+                                                            },
+                                                            ticks: {
+                                                                color: '#a8a8bd'
+                                                            }
+                                                        }
+                                                    },
+                                                    plugins: {
+                                                        legend: {
+                                                            display: false
+                                                        },
+                                                        title: {
+                                                            display: true,
+                                                            text: 'Buy vs Sell Transactions',
+                                                            color: '#fff'
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <p>No chart data available yet. This will populate as transactions are processed.</p>
+                            )}
                         </div>
                     )}
 

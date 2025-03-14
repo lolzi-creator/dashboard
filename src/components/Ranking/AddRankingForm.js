@@ -1,4 +1,4 @@
-// src/components/Ranking/AddRankingForm.js
+// src/components/Ranking/AddRankingForm.js - Updated with higher transaction rates
 import React, { useState, useEffect } from 'react';
 import { startRankingJob } from '../../api/rankingService';
 import { getWalletBatches } from '../../api/walletService';
@@ -8,7 +8,8 @@ const AddRankingForm = () => {
     const [formData, setFormData] = useState({
         tokenAddress: '',
         dexType: 'OPENBOOK',
-        transactionsPerHour: 50,
+        transactionsPerHour: 1000,
+        transactionsPerSecond: 0.28, // New field for transactions per second
         priceRange: 0.1,
         tradeSize: 0.01,
         duration: 24,
@@ -22,6 +23,7 @@ const AddRankingForm = () => {
     const [fetchingWallets, setFetchingWallets] = useState(true);
     const [success, setSuccess] = useState(null);
     const [error, setError] = useState(null);
+    const [usePerSecond, setUsePerSecond] = useState(false); // Toggle between per hour and per second
 
     // Fetch wallet batches on component mount
     useEffect(() => {
@@ -40,16 +42,57 @@ const AddRankingForm = () => {
         fetchWalletBatches();
     }, []);
 
+    // Sync transactions per hour/second when either one changes
+    useEffect(() => {
+        if (usePerSecond) {
+            // When using per second, update per hour
+            const perHour = Math.round(formData.transactionsPerSecond * 3600);
+            setFormData(prev => ({
+                ...prev,
+                transactionsPerHour: perHour
+            }));
+        } else {
+            // When using per hour, update per second
+            const perSecond = parseFloat((formData.transactionsPerHour / 3600).toFixed(2));
+            setFormData(prev => ({
+                ...prev,
+                transactionsPerSecond: perSecond
+            }));
+        }
+    }, [usePerSecond, formData.transactionsPerHour, formData.transactionsPerSecond]);
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'checkbox'
-                ? checked
-                : type === 'number'
-                    ? parseFloat(value)
-                    : value
-        }));
+
+        if (name === 'transactionsPerHour' && !usePerSecond) {
+            // Update transactions per hour directly
+            const perHour = parseInt(value);
+            const perSecond = parseFloat((perHour / 3600).toFixed(2));
+            setFormData(prev => ({
+                ...prev,
+                transactionsPerHour: perHour,
+                transactionsPerSecond: perSecond
+            }));
+        } else if (name === 'transactionsPerSecond' && usePerSecond) {
+            // Update transactions per second directly
+            const perSecond = parseFloat(value);
+            const perHour = Math.round(perSecond * 3600);
+            setFormData(prev => ({
+                ...prev,
+                transactionsPerSecond: perSecond,
+                transactionsPerHour: perHour
+            }));
+        } else {
+            // Handle other form inputs
+            setFormData(prev => ({
+                ...prev,
+                [name]: type === 'checkbox'
+                    ? checked
+                    : type === 'number'
+                        ? parseFloat(value)
+                        : value
+            }));
+        }
     };
 
     const validateForm = () => {
@@ -60,6 +103,11 @@ const AddRankingForm = () => {
 
         if (!formData.walletBatchId) {
             setError('Wallet batch is required');
+            return false;
+        }
+
+        if (formData.transactionsPerHour > 200000) {
+            setError('Maximum transaction rate is 200,000 per hour (about 55.5 per second)');
             return false;
         }
 
@@ -87,7 +135,8 @@ const AddRankingForm = () => {
                 setFormData({
                     tokenAddress: '',
                     dexType: 'OPENBOOK',
-                    transactionsPerHour: 50,
+                    transactionsPerHour: 1000,
+                    transactionsPerSecond: 0.28,
                     priceRange: 0.1,
                     tradeSize: 0.01,
                     duration: 24,
@@ -104,6 +153,11 @@ const AddRankingForm = () => {
             setError(`Error: ${err.message}`);
             setLoading(false);
         }
+    };
+
+    // Toggle between transactions per hour and per second
+    const toggleRateUnit = () => {
+        setUsePerSecond(!usePerSecond);
     };
 
     return (
@@ -140,23 +194,54 @@ const AddRankingForm = () => {
                             <option value="OPENBOOK">OpenBook (Serum)</option>
                             <option value="RAYDIUM">Raydium</option>
                             <option value="ORCA">Orca</option>
+                            <option value="JUPITER">Jupiter (Recommended)</option>
                         </select>
                         <small>The DEX to target for ranking</small>
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="transactionsPerHour">Transactions Per Hour:</label>
-                        <input
-                            type="number"
-                            id="transactionsPerHour"
-                            name="transactionsPerHour"
-                            value={formData.transactionsPerHour}
-                            onChange={handleChange}
-                            min="1"
-                            max="1000"
-                            required
-                        />
-                        <small>How many transactions to execute per hour</small>
+                        <label>
+                            Transaction Rate:
+                            <button
+                                type="button"
+                                className="unit-toggle"
+                                onClick={toggleRateUnit}
+                                style={{marginLeft: '10px', fontSize: '12px'}}
+                            >
+                                Switch to {usePerSecond ? 'per hour' : 'per second'}
+                            </button>
+                        </label>
+
+                        {usePerSecond ? (
+                            <>
+                                <input
+                                    type="number"
+                                    id="transactionsPerSecond"
+                                    name="transactionsPerSecond"
+                                    value={formData.transactionsPerSecond}
+                                    onChange={handleChange}
+                                    min="0.01"
+                                    max="55.5"
+                                    step="0.1"
+                                    required
+                                />
+                                <small>Transactions per second (max 55.5) = {formData.transactionsPerHour} per hour</small>
+                            </>
+                        ) : (
+                            <>
+                                <input
+                                    type="number"
+                                    id="transactionsPerHour"
+                                    name="transactionsPerHour"
+                                    value={formData.transactionsPerHour}
+                                    onChange={handleChange}
+                                    min="1"
+                                    max="200000"
+                                    required
+                                />
+                                <small>Transactions per hour (max 200,000) = {formData.transactionsPerSecond} per second</small>
+                            </>
+                        )}
                     </div>
 
                     <div className="form-group">
@@ -259,8 +344,10 @@ const AddRankingForm = () => {
                     <h3>Strategy Details</h3>
                     <p>
                         This ranking strategy will execute {formData.transactionsPerHour} transactions per hour
-                        for {formData.duration} hours, using { formData.makerOnly ? 'maker (limit)' : 'taker (market)' } orders
-                        with trade sizes of ${formData.tradeSize} each. Transactions will be { formData.staggered ? 'staggered evenly' : 'executed in bursts' }.
+                        ({formData.transactionsPerSecond} per second) for {formData.duration} hours, using
+                        { formData.makerOnly ? ' maker (limit)' : ' taker (market)' } orders
+                        with trade sizes of ${formData.tradeSize} each. Transactions will be
+                        { formData.staggered ? ' staggered evenly' : ' executed in bursts' }.
                     </p>
                     <p>
                         <strong>Estimated Total Volume:</strong> ${(formData.transactionsPerHour * formData.duration * formData.tradeSize).toFixed(2)}
