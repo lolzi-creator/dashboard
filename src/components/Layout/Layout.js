@@ -1,3 +1,4 @@
+// src/components/Layout/Layout.js - Updated with Trending Bot link
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -32,6 +33,12 @@ const Layout = ({ children }) => {
                             <NavLink to="/ranking" className={({ isActive }) => isActive ? 'active' : ''}>
                                 <span className="nav-icon">📈</span>
                                 DEX Ranking
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/trending" className={({ isActive }) => isActive ? 'active' : ''}>
+                                <span className="nav-icon">🔥</span>
+                                CG/CMC Trending
                             </NavLink>
                         </li>
                         <li>

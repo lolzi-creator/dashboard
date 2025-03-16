@@ -1,3 +1,4 @@
+// src/App.js - Updated with Trending Bot routes
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
@@ -8,9 +9,15 @@ import Transactions from './pages/Transactions';
 import Wallets from './pages/Wallets';
 import Settings from './pages/Settings';
 import FundingStatus from './components/Wallets/FundingStatus';
-import Ranking from './pages/Ranking'; // New import
-import RankingJobDetails from './components/Ranking/RankingJobDetails'; // New import
+import Ranking from './pages/Ranking';
+import RankingJobDetails from './components/Ranking/RankingJobDetails';
+
+// Import our new Trending Bot components
+import TrendingBot from './pages/TrendingBot';
+import TrendingJobDetails from './components/Trending/TrendingJobDetails';
+
 import './styles.css';
+import './trending-styles.css';
 
 function App() {
     return (
@@ -24,9 +31,12 @@ function App() {
                     <Route path="/wallets" element={<Wallets />} />
                     <Route path="/wallets/funding/:fundingId" element={<FundingStatus />} />
                     <Route path="/settings" element={<Settings />} />
-                    {/* New routes for Ranking */}
                     <Route path="/ranking" element={<Ranking />} />
                     <Route path="/ranking/:jobId" element={<RankingJobDetails />} />
+
+                    {/* New Trending Bot routes */}
+                    <Route path="/trending" element={<TrendingBot />} />
+                    <Route path="/trending/job/:jobId" element={<TrendingJobDetails />} />
                 </Routes>
             </Layout>
         </Router>
