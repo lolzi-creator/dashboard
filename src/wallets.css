@@ -1,0 +1,1335 @@
+/* Wallets Page Styles */
+
+.wallets-page {
+    width: 100%;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Page header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.subtitle {
+    margin: 0.25rem 0 0 0;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* Wallet summary cards */
+.wallet-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.summary-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    background-color: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+}
+
+.summary-details {
+    flex: 1;
+}
+
+.summary-details h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.summary-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.summary-subtext {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    margin-top: 0.25rem;
+}
+
+/* Tab container */
+.tab-container {
+    background-color: var(--color-bg-secondary);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+}
+
+.tab-navigation {
+    display: flex;
+    background-color: rgba(15, 23, 42, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.tab-navigation button {
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.tab-navigation.small button {
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
+}
+
+.tab-navigation button:hover {
+    color: var(--color-text-primary);
+}
+
+.tab-navigation button.active {
+    color: var(--color-blue);
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.tab-navigation button.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    border-radius: 3px 3px 0 0;
+}
+
+.tab-content {
+    padding: 1.5rem;
+}
+
+/* Wallet batches */
+.wallet-batches {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.wallet-batch-card {
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wallet-batch-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.batch-header {
+    padding: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease;
+    border-left: 4px solid transparent;
+}
+
+.batch-header:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.batch-header.expanded {
+    background-color: rgba(59, 130, 246, 0.1);
+    border-left-color: #3b82f6;
+}
+
+.batch-info h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.wallet-count {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-top: 0.25rem;
+    display: inline-block;
+}
+
+.expand-icon {
+    color: var(--color-blue);
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.batch-header.expanded .expand-icon {
+    transform: rotate(180deg);
+}
+
+.batch-content {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1.25rem;
+}
+
+.batch-actions-bar {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+/* Wallets table */
+.wallets-table-container {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    background-color: rgba(15, 23, 42, 0.3);
+}
+
+.wallets-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.wallets-table th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: rgba(15, 23, 42, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.wallets-table th:first-child {
+    border-top-left-radius: 0.5rem;
+}
+
+.wallets-table th:last-child {
+    border-top-right-radius: 0.5rem;
+}
+
+.wallets-table td {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.wallets-table tr:last-child td {
+    border-bottom: none;
+}
+
+.wallets-table tr:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.address-cell {
+    font-family: 'Courier New', monospace;
+    position: relative;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.copy-button {
+    border: none;
+    background: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: 0.25rem;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.2s ease, color 0.2s ease;
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.address-cell:hover .copy-button {
+    opacity: 1;
+}
+
+.copy-button:hover {
+    color: var(--color-blue);
+}
+
+.balance-positive {
+    color: #10b981;
+}
+
+.token-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+}
+
+.token-badge {
+    background-color: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 9999px;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    color: #3b82f6;
+    white-space: nowrap;
+}
+
+.no-tokens {
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+    font-style: italic;
+}
+
+/* Loading states */
+.loading-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 0;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.spinner-sm {
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Empty state */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    width: 5rem;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.empty-state p {
+    margin-bottom: 1rem;
+    color: var(--color-text-primary);
+}
+
+.empty-subtext {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Forms */
+.info-card {
+    display: flex;
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.info-icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+}
+
+.info-content p {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.info-content p:last-child {
+    margin-bottom: 0;
+}
+
+.wallet-form {
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    color: var(--color-text-primary);
+    transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.375rem;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+/* Funding summary */
+.funding-summary {
+    background-color: rgba(59, 130, 246, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.funding-summary h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: var(--color-text-primary);
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.summary-item.total {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 600;
+}
+
+/* Funding history table */
+.funding-table-container {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    background-color: rgba(15, 23, 42, 0.3);
+}
+
+.funding-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.funding-table th,
+.funding-table td {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.funding-table th {
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+    background-color: rgba(15, 23, 42, 0.3);
+}
+
+.funding-table tr:last-child td {
+    border-bottom: none;
+}
+
+.funding-table tr:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.wallet-counts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.total-count {
+    font-weight: 500;
+}
+
+.status-counts {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.success-count {
+    color: #10b981;
+}
+
+.failed-count {
+    color: #ef4444;
+}
+
+.pending-count {
+    color: #f59e0b;
+}
+
+.status-with-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.mini-progress {
+    height: 0.375rem;
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: 9999px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.mini-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    border-radius: 9999px;
+    transition: width 0.5s ease;
+}
+
+/* Wallet details */
+.wallet-details {
+    width: 100%;
+}
+
+.wallet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.wallet-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.wallet-address-card {
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.address-label {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.address-value {
+    font-family: 'Courier New', monospace;
+    word-break: break-all;
+    font-size: 0.875rem;
+}
+
+.wallet-detail-tabs {
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+}
+
+.wallet-tab-content {
+    padding: 1.5rem;
+}
+
+/* Balance cards */
+.balance-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.balance-card {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.balance-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.balance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.balance-header h3 {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.sol-icon, .token-icon, .tx-icon {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+}
+
+.sol-icon {
+    background-color: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+}
+
+.token-icon {
+    background-color: rgba(139, 92, 246, 0.15);
+    color: #8b5cf6;
+}
+
+.tx-icon {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+}
+
+.balance-amount {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.balance-usd, .balance-subtext {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+/* NFT section */
+.nft-section {
+    margin-top: 1.5rem;
+}
+
+.nft-section h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.nft-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.nft-card {
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nft-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.nft-image {
+    height: 150px;
+    background-color: rgba(15, 23, 42, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nft-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.nft-placeholder {
+    font-size: 2rem;
+    color: var(--color-text-secondary);
+}
+
+.nft-info {
+    padding: 0.75rem;
+}
+
+.nft-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nft-collection {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Tokens and transactions tables */
+.tokens-table-container,
+.wallet-transactions-table-container {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    background-color: rgba(15, 23, 42, 0.3);
+}
+
+.tokens-table,
+.wallet-transactions-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.tokens-table th,
+.tokens-table td,
+.wallet-transactions-table th,
+.wallet-transactions-table td {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tokens-table th,
+.wallet-transactions-table th {
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+    background-color: rgba(15, 23, 42, 0.3);
+}
+
+.tokens-table tr:last-child td,
+.wallet-transactions-table tr:last-child td {
+    border-bottom: none;
+}
+
+.tokens-table tr:hover,
+.wallet-transactions-table tr:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.token-name {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.empty-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: var(--color-text-secondary);
+    background-color: rgba(15, 23, 42, 0.3);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.receive-text {
+    color: #10b981;
+}
+
+.send-text {
+    color: #f59e0b;
+}
+
+/* Button styles */
+.button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button:hover {
+    background-color: #2563eb;
+    transform: translateY(-1px);
+}
+
+.button:active {
+    transform: translateY(1px);
+}
+
+.button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.button-small {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 0.375rem;
+}
+
+.button-secondary {
+    background-color: rgba(100, 116, 139, 0.2);
+    color: #f8fafc;
+    border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+.button-secondary:hover {
+    background-color: rgba(100, 116, 139, 0.3);
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-badge.success,
+.status-badge.completed {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.status-badge.failed {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.status-badge.processing {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.status-badge.completed_with_errors {
+    background-color: rgba(168, 85, 247, 0.1);
+    color: #a855f7;
+    border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+/* Transaction link */
+.tx-link {
+    color: #3b82f6;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.tx-link:hover {
+    color: #60a5fa;
+    text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .wallet-summary,
+    .balance-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .wallet-summary,
+    .balance-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .header-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .header-actions button {
+        width: 100%;
+    }
+
+    .batch-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .tab-navigation {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions button {
+        width: 100%;
+    }
+}
+
+/* Add these styles to your wallets.css file */
+
+/* Funding Status Page */
+.funding-status-page {
+    width: 100%;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Funding summary cards */
+.funding-summary-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.summary-card .id-value {
+    font-family: 'Courier New', monospace;
+    font-size: 1.125rem;
+    word-break: break-all;
+}
+
+.per-wallet {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    margin-left: 0.5rem;
+}
+
+.summary-card .batch-icon {
+    background-color: rgba(139, 92, 246, 0.15);
+    color: #8b5cf6;
+}
+
+.summary-card .status-icon {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+}
+
+.summary-card .status-icon.completed {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+}
+
+.summary-card .status-icon.processing,
+.summary-card .status-icon.pending {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.summary-card .status-icon.completed_with_errors {
+    background-color: rgba(168, 85, 247, 0.15);
+    color: #a855f7;
+}
+
+.summary-card .status-icon.failed {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+/* Funding details card */
+.funding-details-card {
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.funding-progress-section {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.progress-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.progress-stat {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    background-color: rgba(59, 130, 246, 0.1);
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+}
+
+.progress-bar-container {
+    margin-bottom: 1.5rem;
+}
+
+.progress-bar {
+    height: 1rem;
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+    border-radius: 0.5rem;
+    transition: width 0.5s ease;
+}
+
+.progress-fill.processing,
+.progress-fill.pending {
+    background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+    background-size: 200% 100%;
+    animation: shimmerAnimation 2s infinite linear;
+}
+
+.progress-fill.completed {
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+}
+
+.progress-fill.completed_with_errors {
+    background: linear-gradient(90deg, #a855f7 0%, #7e22ce 100%);
+}
+
+.progress-fill.failed {
+    background: linear-gradient(90deg, #ef4444 0%, #b91c1c 100%);
+}
+
+@keyframes shimmerAnimation {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.progress-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.stat-item {
+    background-color: rgba(15, 23, 42, 0.3);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.stat-value.completed {
+    color: #10b981;
+}
+
+.stat-value.failed {
+    color: #ef4444;
+}
+
+.stat-value.pending {
+    color: #f59e0b;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+/* Wallet status section */
+.wallet-status-section {
+    padding: 1.5rem;
+}
+
+.wallet-status-section h2 {
+    margin: 0 0 1rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.wallet-status-table-container {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    background-color: rgba(15, 23, 42, 0.3);
+}
+
+.wallet-status-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.wallet-status-table th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: rgba(15, 23, 42, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.wallet-status-table th:first-child {
+    border-top-left-radius: 0.5rem;
+}
+
+.wallet-status-table th:last-child {
+    border-top-right-radius: 0.5rem;
+}
+
+.wallet-status-table td {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.wallet-status-table tr:last-child td {
+    border-bottom: none;
+}
+
+.wallet-row:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.wallet-row.completed {
+    background-color: rgba(16, 185, 129, 0.05);
+}
+
+.wallet-row.completed:hover {
+    background-color: rgba(16, 185, 129, 0.1);
+}
+
+.wallet-row.failed {
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+.wallet-row.failed:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.pending-text {
+    color: #f59e0b;
+    font-style: italic;
+}
+
+.na-text {
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+.error-message-small {
+    color: #ef4444;
+    font-size: 0.75rem;
+    max-width: 300px;
+    white-space: normal;
+    word-break: break-word;
+}
+
+/* Error and loading containers */
+.error-container,
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    text-align: center;
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: 0.75rem;
+    margin: 2rem 0;
+}
+
+.error-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+}
+
+.error-container h3,
+.not-found-container h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.error-container p,
+.not-found-container p {
+    margin-bottom: 1.5rem;
+    color: var(--color-text-secondary);
+    max-width: 500px;
+}
+
+.error-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .funding-summary-cards,
+    .progress-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .funding-summary-cards,
+    .progress-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .wallet-status-table-container {
+        overflow-x: auto;
+    }
+
+    .wallet-status-table {
+        min-width: 700px;
+    }
+
+    .error-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .error-actions button {
+        width: 100%;
+    }
+}
