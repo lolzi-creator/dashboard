@@ -1,4 +1,4 @@
-// src/App.js - Updated with Trending Bot routes
+// Update App.js to include watchlist routes
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
@@ -12,12 +12,8 @@ import FundingStatus from './components/Wallets/FundingStatus';
 import Ranking from './pages/Ranking';
 import RankingJobDetails from './components/Ranking/RankingJobDetails';
 
-// Import our new Trending Bot components
-import TrendingBot from './pages/TrendingBot';
-import TrendingJobDetails from './components/Trending/TrendingJobDetails';
-
 import './styles.css';
-import './trending-styles.css';
+// You might want to add watchlist-specific styles if needed
 
 function App() {
     return (
@@ -33,10 +29,6 @@ function App() {
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/ranking" element={<Ranking />} />
                     <Route path="/ranking/:jobId" element={<RankingJobDetails />} />
-
-                    {/* New Trending Bot routes */}
-                    <Route path="/trending" element={<TrendingBot />} />
-                    <Route path="/trending/job/:jobId" element={<TrendingJobDetails />} />
                 </Routes>
             </Layout>
         </Router>

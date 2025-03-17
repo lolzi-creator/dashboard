@@ -1,0 +1,956 @@
+/* ranking-styles.css */
+
+.ranking-page {
+    width: 100%;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Ranking job list styling */
+.ranking-job-list {
+    margin-top: 1rem;
+}
+
+.chart-container {
+    height: 300px;
+    position: relative;
+    background-color: rgba(30, 41, 59, 0.5);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Job details page styling */
+.job-details-page {
+    width: 100%;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.detail-card {
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.job-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.job-stat-card {
+    background-color: rgba(30, 41, 59, 0.5);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.job-stat-card h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.job-stat-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.job-stat-label {
+    font-size: 0.75rem;
+    color: var(--color-text-accent);
+}
+
+/* Stats charts styling */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.chart-box {
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.chart-box h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+/* Logs styling */
+.logs-container {
+    max-height: 500px;
+    overflow-y: auto;
+    background-color: rgba(30, 41, 59, 0.5);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+}
+
+.logs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.log-entry {
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    border-left: 3px solid transparent;
+}
+
+.log-entry.error {
+    border-left-color: var(--color-red);
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.log-entry.success {
+    border-left-color: var(--color-green);
+    background-color: rgba(16, 185, 129, 0.1);
+}
+
+.log-entry.attempt {
+    border-left-color: var(--color-blue);
+}
+
+.log-time {
+    font-size: 0.75rem;
+    color: var(--color-text-accent);
+    margin-right: 0.75rem;
+}
+
+.log-type {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+/* Form styling */
+.add-ranking-form {
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.add-ranking-form h2 {
+    margin-top: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.strategy-details {
+    background-color: rgba(59, 130, 246, 0.1);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 3px solid var(--color-blue);
+}
+
+.strategy-details h3 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    color: var(--color-text-primary);
+}
+
+.strategy-details p {
+    margin-bottom: 0.75rem;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.strategy-details p:last-child {
+    margin-bottom: 0;
+}
+
+.strategy-details strong {
+    color: var(--color-text-primary);
+}
+
+.unit-toggle {
+    background: none;
+    border: none;
+    color: var(--color-blue);
+    cursor: pointer;
+    font-size: 0.75rem;
+    text-decoration: underline;
+    margin-left: 0.5rem;
+    padding: 0;
+}
+
+.unit-toggle:hover {
+    color: var(--color-text-primary);
+}
+.status-badge.active {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.inactive {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.status-badge.success {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.status-badge.failed {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Add these styles to ranking-styles.css */
+
+/* Add a subtle gradient background to the tab container */
+.tab-container {
+    background: linear-gradient(to bottom, #1e293b 0%, #0f172a 100%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Add a glow effect to the active tab */
+.tab-navigation button.active {
+    position: relative;
+    overflow: hidden;
+}
+
+.tab-navigation button.active::before {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+    border-radius: var(--radius-full) var(--radius-full) 0 0;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+}
+
+/* Enhance the empty state */
+.empty-state {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.4) 100%);
+    border-radius: var(--radius-xl);
+    padding: 3rem 2rem;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.empty-icon {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    font-size: 2.5rem;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+
+/* Give the metric cards a cool hover effect */
+.metric-card {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.metric-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.metric-card:hover::after {
+    opacity: 1;
+}
+
+/* Make the metric value pop with a text shadow */
+.metric-value {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    transition: text-shadow 0.3s ease;
+}
+
+.metric-card:hover .metric-value {
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+/* Add a subtle animation to the chart boxes */
+.chart-box {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chart-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhance the strategy details */
+.strategy-details {
+    background: linear-gradient(to right, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    transition: all 0.3s ease;
+}
+
+.strategy-details:hover {
+    border-left-width: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Make the log entries more visually distinct */
+.log-entry {
+    transition: all 0.2s ease;
+}
+
+.log-entry:hover {
+    transform: translateX(3px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.log-entry.error {
+    border-left-color: #ef4444;
+    background: linear-gradient(to right, rgba(239, 68, 68, 0.1) 0%, rgba(15, 23, 42, 0.5) 100%);
+}
+
+.log-entry.success {
+    border-left-color: #10b981;
+    background: linear-gradient(to right, rgba(16, 185, 129, 0.1) 0%, rgba(15, 23, 42, 0.5) 100%);
+}
+
+.log-entry.attempt {
+    border-left-color: #3b82f6;
+    background: linear-gradient(to right, rgba(59, 130, 246, 0.1) 0%, rgba(15, 23, 42, 0.5) 100%);
+}
+
+/* Enhance the detail form */
+.add-ranking-form {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.add-ranking-form:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+/* Add special styling for buttons */
+.button {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+    transition: all 0.5s ease;
+}
+
+.button:hover::after {
+    left: 100%;
+}
+
+/* Give the table rows some pizzazz */
+.table-row {
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.table-row:hover {
+    border-left-color: #3b82f6;
+    background-color: rgba(30, 41, 59, 0.9);
+    transform: translateX(3px);
+}
+
+.selected-row {
+    background-color: rgba(59, 130, 246, 0.15);
+    border-left: 3px solid #3b82f6;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Add these styles for enhanced form elements in ranking-styles.css */
+
+/* Make form inputs more visually appealing */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) inset;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3), 0 2px 5px rgba(0, 0, 0, 0.1) inset;
+    background: rgba(15, 23, 42, 0.7);
+}
+
+/* Add a colorful focus style for the rate slider */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: linear-gradient(to right, #3b82f6, #8b5cf6);
+    border-radius: var(--radius-full);
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 1px 8px rgba(59, 130, 246, 0.4);
+}
+
+/* Make checkboxes more visually appealing with colorful check */
+.checkbox-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.checkbox-label {
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    display: inline-block;
+    user-select: none;
+}
+
+.checkbox-label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.checkbox-label::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 3px;
+    width: 8px;
+    height: 12px;
+    border: solid #3b82f6;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) scale(0);
+    transition: all 0.2s ease;
+    opacity: 0;
+}
+
+.checkbox-label input[type="checkbox"]:checked ~ ::before {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.checkbox-label input[type="checkbox"]:checked ~ ::after {
+    transform: rotate(45deg) scale(1);
+    opacity: 1;
+}
+
+/* Add a colorful border to the strategy details */
+.strategy-details {
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-left: 3px solid #3b82f6;
+    background: linear-gradient(to right, rgba(59, 130, 246, 0.1), rgba(15, 23, 42, 0.5));
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Add some styling for the range value indicator */
+.range-value {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced submit button */
+.form-actions .button {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: var(--radius-lg);
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+    transition: all 0.3s ease;
+}
+
+.form-actions .button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(59, 130, 246, 0.4);
+}
+
+.form-actions .button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(59, 130, 246, 0.3);
+}
+/* Add this to your CSS to improve checkbox visibility */
+
+/* Modern checkbox styling */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    position: relative;
+}
+
+.checkbox-container input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkbox-custom {
+    position: relative;
+    height: 24px;
+    width: 24px;
+    margin-right: 12px;
+    background-color: rgba(15, 23, 42, 0.5);
+    border: 2px solid rgba(59, 130, 246, 0.4);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hover and focus states */
+.checkbox-container:hover .checkbox-custom {
+    border-color: rgba(59, 130, 246, 0.8);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.checkbox-container input:focus ~ .checkbox-custom {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* Checked state */
+.checkbox-container input:checked ~ .checkbox-custom {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+/* Checkmark */
+.checkbox-custom:after {
+    content: "";
+    position: absolute;
+    display: none;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-container input:checked ~ .checkbox-custom:after {
+    display: block;
+}
+
+/* Label text */
+.checkbox-label {
+    font-size: 1rem;
+    color: #f8fafc;
+    user-select: none;
+}
+
+/* Description text */
+.checkbox-description {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 0.25rem;
+
+}
+/* Add this to your CSS for better progress bars */
+
+.progress-container {
+    width: 100%;
+    margin: 0.5rem 0;
+}
+
+.progress-bar {
+    background-color: rgba(15, 23, 42, 0.6);
+    border-radius: 12px;
+    height: 12px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 12px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: width 0.5s ease;
+}
+
+/* Different gradient styles for different contexts */
+.progress-fill.success-gradient {
+    background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.progress-fill.primary-gradient {
+    background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+.progress-fill.warm-gradient {
+    background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%);
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+/* Progress text */
+.progress-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+/* Progress stats section */
+.progress-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.progress-stats .progress-label {
+    font-weight: 600;
+    color: #f8fafc;
+}
+
+.progress-stats .progress-values {
+    color: #94a3b8;
+}
+/* Status cards for job details */
+
+.status-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.status-card {
+    padding: 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+    overflow: hidden;
+}
+
+.status-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+    opacity: 0.7;
+}
+
+.status-card-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #94a3b8;
+    margin-bottom: 0.75rem;
+}
+
+.status-card-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.5px;
+}
+
+.status-card-subtitle {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+/* Status card colors */
+.status-card.card-blue {
+    background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+}
+
+.status-card.card-purple {
+    background: linear-gradient(135deg, #7e22ce 0%, #581c87 100%);
+    box-shadow: 0 4px 12px rgba(126, 34, 206, 0.3);
+}
+
+.status-card.card-green {
+    background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+    box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
+}
+
+.status-card.card-amber {
+    background: linear-gradient(135deg, #b45309 0%, #7c2d12 100%);
+    box-shadow: 0 4px 12px rgba(180, 83, 9, 0.3);
+}
+
+/* Status badge for active/inactive states */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.status-badge.active {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.active::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #10b981;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+}
+
+.status-badge.inactive {
+    background-color: rgba(100, 116, 139, 0.2);
+    color: #94a3b8;
+    border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+/* Modern responsive table styling */
+
+.table-container {
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: rgba(15, 23, 42, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 2rem;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.modern-table th {
+    background-color: rgba(15, 23, 42, 0.6);
+    color: #94a3b8;
+    font-weight: 500;
+    font-size: 0.875rem;
+    text-align: left;
+    padding: 1rem;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.modern-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #f8fafc;
+    font-size: 0.875rem;
+    transition: background-color 0.2s ease;
+    word-break: break-word;
+}
+
+.modern-table tr:last-child td {
+    border-bottom: none;
+}
+
+.modern-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.modern-table tbody tr:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* Table cell types */
+.cell-id {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: #94a3b8 !important;
+}
+
+.cell-token {
+    font-weight: 500;
+}
+
+.cell-success-rate {
+    font-weight: 600;
+}
+
+.cell-success-rate.high {
+    color: #10b981 !important;
+}
+
+.cell-success-rate.medium {
+    color: #f59e0b !important;
+}
+
+.cell-success-rate.low {
+    color: #ef4444 !important;
+}
+
+.cell-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Button styling within tables */
+.table-button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.table-button:hover {
+    background-color: #2563eb;
+    transform: translateY(-1px);
+}
+
+.table-button:active {
+    transform: translateY(1px);
+}
+
+/* Empty table state */
+.empty-table {
+    padding: 3rem;
+    text-align: center;
+    color: #94a3b8;
+}
+
+.empty-table-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-table-message {
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Make tables responsive */
+@media (max-width: 768px) {
+    .modern-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .cell-actions {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}

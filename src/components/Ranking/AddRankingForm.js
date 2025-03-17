@@ -1,10 +1,10 @@
-// src/components/Ranking/AddRankingForm.js - Updated with higher transaction rates
+// src/components/Ranking/AddRankingForm.js
 import React, { useState, useEffect } from 'react';
 import { startRankingJob } from '../../api/rankingService';
 import { getWalletBatches } from '../../api/walletService';
 import LoadingSpinner from '../common/LoadingSpinner';
 
-const AddRankingForm = () => {
+const AddRankingForm = ({ setActiveTab, setSuccess, setError, refreshJobs }) => {
     const [formData, setFormData] = useState({
         tokenAddress: '',
         dexType: 'OPENBOOK',
@@ -21,8 +21,6 @@ const AddRankingForm = () => {
     const [walletBatches, setWalletBatches] = useState([]);
     const [loading, setLoading] = useState(false);
     const [fetchingWallets, setFetchingWallets] = useState(true);
-    const [success, setSuccess] = useState(null);
-    const [error, setError] = useState(null);
     const [usePerSecond, setUsePerSecond] = useState(false); // Toggle between per hour and per second
 
     // Fetch wallet batches on component mount
@@ -35,12 +33,13 @@ const AddRankingForm = () => {
                 setFetchingWallets(false);
             } catch (err) {
                 console.error('Error fetching wallet batches:', err);
+                setError('Error fetching wallet batches: ' + err.message);
                 setFetchingWallets(false);
             }
         };
 
         fetchWalletBatches();
-    }, []);
+    }, [setError]);
 
     // Sync transactions per hour/second when either one changes
     useEffect(() => {
@@ -106,8 +105,9 @@ const AddRankingForm = () => {
             return false;
         }
 
-        if (formData.transactionsPerHour > 200000) {
-            setError('Maximum transaction rate is 200,000 per hour (about 55.5 per second)');
+        // Due to RPC limits, set a max reasonable rate
+        if (formData.transactionsPerHour > 5400) {
+            setError('Maximum transaction rate is 5,400 per hour (1.5 per second) due to RPC rate limits');
             return false;
         }
 
@@ -131,6 +131,7 @@ const AddRankingForm = () => {
 
             if (result.success) {
                 setSuccess(`Ranking job started successfully! Job ID: ${result.jobId}`);
+
                 // Reset form
                 setFormData({
                     tokenAddress: '',
@@ -144,6 +145,10 @@ const AddRankingForm = () => {
                     staggered: true,
                     walletBatchId: ''
                 });
+
+                // Refresh jobs list and switch to active tab
+                refreshJobs();
+                setActiveTab('active');
             } else {
                 setError(result.message || 'Failed to start ranking job');
             }
@@ -163,9 +168,6 @@ const AddRankingForm = () => {
     return (
         <div className="add-ranking-form">
             <h2>Start New DEX Ranking Job</h2>
-
-            {error && <div className="error-message">{error}</div>}
-            {success && <div className="success-message">{success}</div>}
 
             <form onSubmit={handleSubmit}>
                 <div className="form-grid">
@@ -221,11 +223,11 @@ const AddRankingForm = () => {
                                     value={formData.transactionsPerSecond}
                                     onChange={handleChange}
                                     min="0.01"
-                                    max="55.5"
+                                    max="1.5"
                                     step="0.1"
                                     required
                                 />
-                                <small>Transactions per second (max 55.5) = {formData.transactionsPerHour} per hour</small>
+                                <small>Transactions per second (max 1.5) = {formData.transactionsPerHour} per hour</small>
                             </>
                         ) : (
                             <>
@@ -236,10 +238,10 @@ const AddRankingForm = () => {
                                     value={formData.transactionsPerHour}
                                     onChange={handleChange}
                                     min="1"
-                                    max="200000"
+                                    max="5400"
                                     required
                                 />
-                                <small>Transactions per hour (max 200,000) = {formData.transactionsPerSecond} per second</small>
+                                <small>Transactions per hour (max 5,400) = {formData.transactionsPerSecond} per second</small>
                             </>
                         )}
                     </div>
