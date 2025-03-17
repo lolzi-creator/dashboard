@@ -148,6 +148,7 @@ const AddRankingForm = ({ setActiveTab, setSuccess, setError, refreshJobs }) => 
 
                 // Refresh jobs list and switch to active tab
                 refreshJobs();
+                refreshJobs();
                 setActiveTab('active');
             } else {
                 setError(result.message || 'Failed to start ranking job');

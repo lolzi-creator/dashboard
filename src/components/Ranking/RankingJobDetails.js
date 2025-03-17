@@ -293,8 +293,6 @@ const RankingJobDetails = () => {
                     </div>
                 </div>
             </div>
-
-            // Update the progress bar in the success-rate-card
             <div className="modern-progress">
                 <div
                     className="progress-fill"
