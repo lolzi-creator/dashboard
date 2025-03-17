@@ -9,7 +9,9 @@ import './modern-styles.css';
 import './additional-styles.css';
 import './boosts-styles.css';
 import './form-styles.css';
-import './ranking-styles.css';  // Add this new import
+import './boost-details.css';
+import './ranking-styles.css'; 
+import './transactions.css';
 
 // Create app context provider for global state management
 const AppContext = React.createContext();
