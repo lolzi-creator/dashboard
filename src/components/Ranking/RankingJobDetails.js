@@ -56,7 +56,7 @@ const RankingJobDetails = () => {
         }, 10000);
 
         return () => clearInterval(interval);
-    }, [jobId, job?.active]);
+    }, [jobId, job.active, job]);
 
     const prepareChartData = (logs, jobData) => {
         if (!logs || logs.length === 0 || !jobData) return;

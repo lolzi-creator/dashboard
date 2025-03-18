@@ -4,7 +4,7 @@ import { getActiveBoosts } from '../api/boostService';
 import { getActiveRankingJobs } from '../api/rankingService';
 import { getRecentTransactions } from '../api/transactionService';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { Line, Bar, Doughnut } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -41,7 +41,7 @@ const Dashboard = () => {
     const [activeRankingJobs, setActiveRankingJobs] = useState([]);
     const [recentTransactions, setRecentTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [setError] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -73,7 +73,7 @@ const Dashboard = () => {
         // Refresh data every 30 seconds
         const interval = setInterval(fetchData, 30000);
         return () => clearInterval(interval);
-    }, []);
+    }, [setError]);
 
     // Calculate volume statistics
     const totalActiveVolume = activeBoosts.reduce((sum, boost) =>

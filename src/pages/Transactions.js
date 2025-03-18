@@ -12,7 +12,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarEleme
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [setError] = useState(null);
     const [filterType, setFilterType] = useState('all');
     const [filterStatus, setFilterStatus] = useState('all');
     const [filterTimeframe, setFilterTimeframe] = useState('24h');
@@ -227,7 +227,7 @@ const Transactions = () => {
                 const now = new Date().getTime();
                 let timeframeMs = 24 * 60 * 60 * 1000; // Default to 24h
 
-                if (filterTimeframe === '1h') timeframeMs = 1 * 60 * 60 * 1000;
+                if (filterTimeframe === '1h') timeframeMs = 60 * 60 * 1000;
                 if (filterTimeframe === '6h') timeframeMs = 6 * 60 * 60 * 1000;
                 if (filterTimeframe === '24h') timeframeMs = 24 * 60 * 60 * 1000;
                 if (filterTimeframe === '7d') timeframeMs = 7 * 24 * 60 * 60 * 1000;

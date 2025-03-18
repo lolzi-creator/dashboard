@@ -9,7 +9,7 @@ const FundingStatus = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
-    const [statusInterval, setStatusInterval] = useState(null);
+    const [setStatusInterval] = useState(null);
 
     useEffect(() => {
         fetchFundingStatus();

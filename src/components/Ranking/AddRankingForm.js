@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { startRankingJob } from '../../api/rankingService';
 import { getWalletBatches } from '../../api/walletService';
-import LoadingSpinner from '../common/LoadingSpinner';
+
 
 const AddRankingForm = ({ setActiveTab, setSuccess, setError, refreshJobs }) => {
     const [formData, setFormData] = useState({

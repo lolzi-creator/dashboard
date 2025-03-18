@@ -90,6 +90,8 @@ export const getBoostLogs = (boostId) => {
                         message: 'Jupiter quote failed: 429 Too Many Requests'
                     };
                     break;
+                default:
+                    console.log("Unknown status");
             }
 
             logs.push(logEntry);

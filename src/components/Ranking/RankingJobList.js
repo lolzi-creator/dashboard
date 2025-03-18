@@ -2,11 +2,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { stopRankingJob } from '../../api/rankingService';
-import StatusBadge from '../common/StatusBadge';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 const RankingJobList = ({ jobs, setSuccess, setError }) => {
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
     const [stoppingJob, setStoppingJob] = useState(null);
 
     // Handle job stopping

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { startBoost } from '../../api/boostService';
 import { getWalletBatches } from '../../api/walletService';
-import LoadingSpinner from '../common/LoadingSpinner';
 
 const AddBoostForm = () => {
     const [formData, setFormData] = useState({
@@ -15,7 +14,7 @@ const AddBoostForm = () => {
     });
 
     const [walletBatches, setWalletBatches] = useState([]);
-    const [packages, setPackages] = useState([
+    const [packages] = useState([
         { id: 'basic', name: 'Basic', description: 'Standard volume boost with 1 trade per minute' },
         { id: 'premium', name: 'Premium', description: 'Enhanced volume boost with 2 trades per minute' },
         { id: 'custom', name: 'Custom', description: 'Customized settings for your specific needs' }
