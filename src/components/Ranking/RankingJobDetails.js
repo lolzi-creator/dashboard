@@ -1,4 +1,3 @@
-// src/components/Ranking/RankingJobDetails.js
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getRankingJob, getRankingJobLogs, stopRankingJob } from '../../api/rankingService';
@@ -30,18 +29,25 @@ const RankingJobDetails = () => {
 
                 // Fetch job details
                 const jobData = await getRankingJob(jobId);
-                setJob(jobData.job);
+                if (jobData && jobData.job) {
+                    setJob(jobData.job);
+                } else {
+                    throw new Error('Failed to load job data');
+                }
 
                 // Fetch logs
                 const logsData = await getRankingJobLogs(jobId);
                 setLogs(logsData.logs || []);
 
                 // Prepare chart data from logs
-                prepareChartData(logsData.logs || [], jobData.job);
+                if (jobData && jobData.job) {
+                    prepareChartData(logsData.logs || [], jobData.job);
+                }
 
                 setLoading(false);
             } catch (err) {
-                setError(err.message);
+                console.error("Error fetching job details:", err);
+                setError(err.message || 'Failed to load job details');
                 setLoading(false);
             }
         };
@@ -49,14 +55,47 @@ const RankingJobDetails = () => {
         fetchData();
 
         // Poll for updates if job is active
-        const interval = setInterval(() => {
-            if (job && job.active) {
+        let interval;
+        if (!loading && job && job.active) {
+            interval = setInterval(() => {
                 fetchData();
-            }
-        }, 10000);
+            }, 10000);
+        }
 
-        return () => clearInterval(interval);
-    }, [jobId, job.active, job]);
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [jobId]);
+
+    // Update polling when job status changes
+    useEffect(() => {
+        let interval;
+        if (job && job.active) {
+            interval = setInterval(async () => {
+                try {
+                    // Fetch job details
+                    const jobData = await getRankingJob(jobId);
+                    if (jobData && jobData.job) {
+                        setJob(jobData.job);
+                    }
+
+                    // Fetch logs
+                    const logsData = await getRankingJobLogs(jobId);
+                    setLogs(logsData.logs || []);
+
+                    if (jobData && jobData.job) {
+                        prepareChartData(logsData.logs || [], jobData.job);
+                    }
+                } catch (err) {
+                    console.warn("Error updating job data:", err);
+                }
+            }, 10000);
+        }
+
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [jobId, job?.active]);
 
     const prepareChartData = (logs, jobData) => {
         if (!logs || logs.length === 0 || !jobData) return;
@@ -71,7 +110,8 @@ const RankingJobDetails = () => {
 
         // Initialize with empty hours to fill gaps
         const startTime = new Date(jobData.startTime);
-        const endTime = new Date(Math.min(Date.now(), jobData.endTime));
+        const currentTime = new Date();
+        const endTime = jobData.endTime ? new Date(jobData.endTime) : currentTime;
         const hourDiff = Math.ceil((endTime - startTime) / (60 * 60 * 1000));
 
         for (let i = 0; i <= hourDiff; i++) {
@@ -85,6 +125,8 @@ const RankingJobDetails = () => {
 
         // Count transactions by hour
         txLogs.forEach(log => {
+            if (!log.timestamp) return;
+
             const timestamp = new Date(log.timestamp);
             const hourKey = timestamp.toISOString().slice(0, 13);
 
@@ -140,7 +182,7 @@ const RankingJobDetails = () => {
         };
 
         // Success vs. failure rate
-        const successRate = {
+        const successRateData = {
             labels: ['Successful', 'Failed'],
             datasets: [
                 {
@@ -164,7 +206,7 @@ const RankingJobDetails = () => {
 
         setChartData({
             timeline: timelineData,
-            successRate: successRate
+            successRate: successRateData
         });
     };
 
@@ -185,7 +227,9 @@ const RankingJobDetails = () => {
 
                 // Refresh job data to show updated status
                 const jobData = await getRankingJob(jobId);
-                setJob(jobData.job);
+                if (jobData && jobData.job) {
+                    setJob(jobData.job);
+                }
             } else {
                 setError(result.message || 'Failed to stop job');
             }
@@ -198,16 +242,16 @@ const RankingJobDetails = () => {
     };
 
     const calculateSuccessRate = () => {
-        if (!job || job.transactionCount === 0) return '0.0';
+        if (!job || !job.transactionCount || job.transactionCount === 0) return '0.0';
         return ((job.successfulTransactions / job.transactionCount) * 100).toFixed(1);
     };
 
     const formatElapsedTime = () => {
-        if (!job) return 'Unknown';
+        if (!job || !job.startTime) return 'Unknown';
 
-        const elapsed = job.active
-            ? Date.now() - job.startTime
-            : job.endTime - job.startTime;
+        const startTime = new Date(job.startTime).getTime();
+        const endTime = job.active ? Date.now() : (job.endTime ? new Date(job.endTime).getTime() : Date.now());
+        const elapsed = endTime - startTime;
 
         const hours = Math.floor(elapsed / (60 * 60 * 1000));
         const minutes = Math.floor((elapsed % (60 * 60 * 1000)) / (60 * 1000));
@@ -289,7 +333,7 @@ const RankingJobDetails = () => {
                     <h3>Running Time</h3>
                     <div className="job-stat-value">{formatElapsedTime()}</div>
                     <div className="job-stat-label">
-                        Started: {new Date(job.startTime).toLocaleString()}
+                        {job.startTime ? `Started: ${new Date(job.startTime).toLocaleString()}` : 'Not started'}
                     </div>
                 </div>
             </div>
@@ -297,7 +341,7 @@ const RankingJobDetails = () => {
                 <div
                     className="progress-fill"
                     style={{
-                        width: `${calculateSuccessRate()}%`,
+                        width: `${job.progress || 0}%`,
                         background: 'linear-gradient(90deg, #10b981 0%, #3b82f6 100%)'
                     }}
                 ></div>
@@ -307,15 +351,15 @@ const RankingJobDetails = () => {
                 <div className="detail-summary">
                     <div className="detail-row">
                         <span className="detail-label">Token:</span>
-                        <span className="detail-value">{job.tokenAddress}</span>
+                        <span className="detail-value">{job.tokenAddress || 'Unknown'}</span>
                     </div>
                     <div className="detail-row">
                         <span className="detail-label">DEX Type:</span>
-                        <span className="detail-value">{job.dexType}</span>
+                        <span className="detail-value">{job.dexType || 'Unknown'}</span>
                     </div>
                     <div className="detail-row">
                         <span className="detail-label">Wallet Batch:</span>
-                        <span className="detail-value">{job.walletBatchId}</span>
+                        <span className="detail-value">{job.walletBatchId || 'Unknown'}</span>
                     </div>
                     <div className="detail-row">
                         <span className="detail-label">Transactions/Hour:</span>
@@ -387,13 +431,13 @@ const RankingJobDetails = () => {
                                     <h3>Job Configuration</h3>
                                     <p>
                                         This job is configured to execute {job.transactionsPerHour || 0} transactions per hour
-                                        on {job.dexType} for the token {job.tokenAddress.substring(0, 8)}...
+                                        on {job.dexType} for the token {job.tokenAddress && job.tokenAddress.substring(0, 8)}...
                                     </p>
                                     <p>
                                         <strong>Trade Size:</strong> ${job.tradeSize || 0} per transaction
                                     </p>
                                     <p>
-                                        <strong>Estimated Completion:</strong> {new Date(job.endTime).toLocaleString()}
+                                        <strong>Estimated Completion:</strong> {job.endTime ? new Date(job.endTime).toLocaleString() : 'Unknown'}
                                     </p>
                                 </div>
                             )}
@@ -559,17 +603,17 @@ const RankingJobDetails = () => {
                                     <div className="logs-list">
                                         {logs.slice().reverse().map((log, index) => (
                                             <div key={index} className={`log-entry ${log.type}`}>
-                                                <span className="log-time">{new Date(log.timestamp).toLocaleString()}</span>
-                                                <span className="log-type">{log.type.toUpperCase()}</span>
+                                                <span className="log-time">{log.timestamp ? new Date(log.timestamp).toLocaleString() : 'Unknown time'}</span>
+                                                <span className="log-type">{log.type ? log.type.toUpperCase() : 'INFO'}</span>
                                                 <div className="log-content">
                                                     {log.type === 'error' ? (
-                                                        <span className="error-message">{log.message}</span>
+                                                        <span className="error-message">{log.message || 'Unknown error'}</span>
                                                     ) : log.type === 'success' ? (
                                                         <span>
                                                             Transaction successful - {log.txid && <span>Tx: {log.txid.substring(0, 8)}...</span>}
                                                         </span>
                                                     ) : log.type === 'attempt' ? (
-                                                        <span>Attempt for wallet {log.walletAddress?.substring(0, 8)}...</span>
+                                                        <span>Attempt for wallet {log.walletAddress ? log.walletAddress.substring(0, 8) + '...' : 'Unknown'}</span>
                                                     ) : (
                                                         <pre>{JSON.stringify(log, null, 2)}</pre>
                                                     )}

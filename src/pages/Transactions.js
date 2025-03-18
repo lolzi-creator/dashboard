@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getRecentTransactions } from '../api/transactionService';
+import { getRecentTransactions, getBoostTransactions } from '../api/transactionService';
 import { getActiveBoosts } from '../api/boostService';
 import { getActiveRankingJobs } from '../api/rankingService';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import LoadingSpinner from '../components/common/LoadingSpinner';
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
@@ -26,8 +27,8 @@ const Transactions = () => {
         sellVolume: 0,
         failedCount: 0
     });
-    // Add data source tracking
-    const [dataSource, setDataSource] = useState('transactions');
+    // Track data source
+    const [dataSource, setDataSource] = useState('all');
     const [debugMessage, setDebugMessage] = useState(null);
 
     useEffect(() => {
@@ -36,78 +37,142 @@ const Transactions = () => {
         // Refresh data periodically
         const interval = setInterval(fetchTransactions, 30000);
         return () => clearInterval(interval);
-    }, [dataSource]);
+    }, [filterTimeframe, dataSource]);
 
     const fetchTransactions = async () => {
         try {
             setLoading(true);
             setError(null);
+            console.log("Fetching transaction data...");
 
             let transactionsData = [];
 
-            if (dataSource === 'transactions') {
-                // Try the standard transactions endpoint first
+            // Try the standard transactions endpoint first
+            try {
                 const data = await getRecentTransactions(100);
-                if (data && data.transactions) {
-                    transactionsData = data.transactions;
+                console.log("Recent transactions API response:", data);
+                if (data && data.transactions && data.transactions.length > 0) {
+                    transactionsData = data.transactions.map(tx => ({
+                        ...tx,
+                        source: tx.boostId ? 'boost' : (tx.jobId ? 'ranking' : 'unknown'),
+                        sourceId: tx.boostId || tx.jobId || null
+                    }));
                 }
-            } else if (dataSource === 'boosts') {
-                // Fallback to collecting transactions from active boosts
-                const boostsData = await getActiveBoosts();
-                if (boostsData && boostsData.boosts && boostsData.boosts.length > 0) {
-                    for (const boost of boostsData.boosts) {
-                        try {
-                            const boostTxResponse = await fetch(`/api/boost/${boost.boostId}/transactions`);
-                            const boostTxData = await boostTxResponse.json();
-                            if (boostTxData && boostTxData.transactions) {
-                                transactionsData = [...transactionsData, ...boostTxData.transactions];
+            } catch (err) {
+                console.warn("Error fetching from transactions endpoint:", err);
+            }
+
+            // If we need to collect from boost sources or have no transactions yet
+            if (dataSource === 'all' || dataSource === 'boosts' || transactionsData.length === 0) {
+                try {
+                    // Get active boosts
+                    const boostsData = await getActiveBoosts();
+                    console.log("Active boosts:", boostsData);
+
+                    if (boostsData && boostsData.boosts && boostsData.boosts.length > 0) {
+                        // For each boost, fetch its transactions
+                        for (const boost of boostsData.boosts) {
+                            try {
+                                const boostTxResponse = await getBoostTransactions(boost.boostId);
+                                console.log(`Transactions for boost ${boost.boostId}:`, boostTxResponse);
+
+                                if (boostTxResponse && boostTxResponse.transactions) {
+                                    // Add source info to each transaction
+                                    const txsWithSource = boostTxResponse.transactions.map(tx => ({
+                                        ...tx,
+                                        source: 'boost',
+                                        sourceId: boost.boostId
+                                    }));
+
+                                    transactionsData = [...transactionsData, ...txsWithSource];
+                                }
+                            } catch (boostErr) {
+                                console.warn(`Error fetching transactions for boost ${boost.boostId}:`, boostErr);
                             }
-                        } catch (boostErr) {
-                            console.warn(`Error fetching transactions for boost ${boost.boostId}:`, boostErr);
                         }
                     }
-                }
-            } else if (dataSource === 'ranking') {
-                // Try collecting transactions from ranking jobs
-                const rankingData = await getActiveRankingJobs();
-                if (rankingData && rankingData.jobs && rankingData.jobs.length > 0) {
-                    // This is a placeholder - you'll need to implement an API endpoint to get ranking job transactions
-                    transactionsData = [];
-                    setDebugMessage('Ranking jobs found, but transaction data cannot be retrieved yet.');
+                } catch (boostsErr) {
+                    console.warn("Error fetching boosts:", boostsErr);
                 }
             }
 
-            // If we still don't have transactions, try other data sources
-            if (transactionsData.length === 0 && dataSource === 'transactions') {
-                setDataSource('boosts');
-                setLoading(false);
-                return;
-            } else if (transactionsData.length === 0 && dataSource === 'boosts') {
-                setDataSource('ranking');
-                setLoading(false);
-                return;
+            // If we need to collect from ranking jobs or have no transactions yet
+            if (dataSource === 'all' || dataSource === 'ranking' || transactionsData.length === 0) {
+                try {
+                    // Get active ranking jobs
+                    const rankingData = await getActiveRankingJobs();
+                    console.log("Active ranking jobs:", rankingData);
+
+                    if (rankingData && rankingData.jobs && rankingData.jobs.length > 0) {
+                        // For each job, we would fetch its transactions
+                        // This requires your API to have an endpoint for ranking job transactions
+                        for (const job of rankingData.jobs) {
+                            try {
+                                // Replace this with your actual API call once implemented
+                                // const jobTxs = await getRankingJobTransactions(job.id);
+
+                                // For now, we'll just check if job has transactions directly
+                                if (job.transactions) {
+                                    const txsWithSource = job.transactions.map(tx => ({
+                                        ...tx,
+                                        source: 'ranking',
+                                        sourceId: job.id
+                                    }));
+
+                                    transactionsData = [...transactionsData, ...txsWithSource];
+                                }
+                            } catch (jobErr) {
+                                console.warn(`Error with ranking job ${job.id} transactions:`, jobErr);
+                            }
+                        }
+                    }
+                } catch (rankingErr) {
+                    console.warn("Error fetching ranking jobs:", rankingErr);
+                }
             }
 
-            setTransactions(transactionsData);
+            // Remove duplicate transactions based on signature/txid
+            const uniqueTransactions = removeDuplicateTransactions(transactionsData);
 
-            if (transactionsData.length > 0) {
-                prepareChartData(transactionsData);
-                calculateStats(transactionsData);
+            // Sort transactions by timestamp (newest first)
+            uniqueTransactions.sort((a, b) => {
+                const timeA = new Date(a.timestamp || a.time || 0).getTime();
+                const timeB = new Date(b.timestamp || b.time || 0).getTime();
+                return timeB - timeA;
+            });
+
+            console.log("Combined unique transactions:", uniqueTransactions);
+
+            if (uniqueTransactions.length === 0) {
+                setDebugMessage("No transactions found from any source. Try changing the data source.");
+            } else {
+                setDebugMessage(null);
             }
 
+            setTransactions(uniqueTransactions);
+            prepareChartData(uniqueTransactions);
+            calculateStats(uniqueTransactions);
             setLoading(false);
         } catch (err) {
-            console.error("Error fetching transactions:", err);
+            console.error("Error in transaction fetching:", err);
             setError(`Error loading transactions: ${err.message}`);
+            setDebugMessage(`Error: ${err.message}. Try a different data source.`);
             setLoading(false);
-
-            // Try alternative data source if current one fails
-            if (dataSource === 'transactions') {
-                setDataSource('boosts');
-            } else if (dataSource === 'boosts') {
-                setDataSource('ranking');
-            }
         }
+    };
+
+    // Helper function to remove duplicate transactions
+    const removeDuplicateTransactions = (txList) => {
+        const uniqueTxMap = new Map();
+
+        txList.forEach(tx => {
+            const uniqueKey = tx.signature || tx.txid || `${tx.timestamp || tx.time}-${tx.side || tx.type}-${tx.value}`;
+            if (!uniqueTxMap.has(uniqueKey)) {
+                uniqueTxMap.set(uniqueKey, tx);
+            }
+        });
+
+        return Array.from(uniqueTxMap.values());
     };
 
     const prepareChartData = (txData) => {
@@ -130,7 +195,10 @@ const Transactions = () => {
 
         // Fill data from transactions
         txData.forEach(tx => {
-            const txDate = new Date(tx.timestamp || tx.time);
+            const txTime = tx.timestamp || tx.time;
+            if (!txTime) return;
+
+            const txDate = new Date(txTime);
             // Skip transactions outside our timeframe
             if (now.getTime() - txDate.getTime() > timeframeHours * 60 * 60 * 1000) return;
 
@@ -141,10 +209,11 @@ const Transactions = () => {
 
             hourlyData[hourKey].count += 1;
 
-            if (tx.side === 'buy' || tx.type === 'BUY') {
+            const txType = (tx.side || tx.type || '').toLowerCase();
+            if (txType === 'buy') {
                 hourlyData[hourKey].buys += 1;
                 hourlyData[hourKey].buyVolume += (tx.value || 0);
-            } else {
+            } else if (txType === 'sell') {
                 hourlyData[hourKey].sells += 1;
                 hourlyData[hourKey].sellVolume += (tx.value || 0);
             }
@@ -180,7 +249,9 @@ const Transactions = () => {
 
     const calculateStats = (txData) => {
         const totalCount = txData.length;
-        const successCount = txData.filter(tx => tx.success || tx.status === 'success').length;
+        const successCount = txData.filter(tx => {
+            return tx.success || tx.status === 'success' || tx.status === 'completed';
+        }).length;
         const failedCount = totalCount - successCount;
         const successRate = totalCount > 0 ? (successCount / totalCount) * 100 : 0;
 
@@ -188,9 +259,10 @@ const Transactions = () => {
         let sellVolume = 0;
 
         txData.forEach(tx => {
-            if (tx.side === 'buy' || tx.type === 'BUY') {
+            const txType = (tx.side || tx.type || '').toLowerCase();
+            if (txType === 'buy') {
                 buyVolume += (tx.value || 0);
-            } else {
+            } else if (txType === 'sell') {
                 sellVolume += (tx.value || 0);
             }
         });
@@ -208,31 +280,34 @@ const Transactions = () => {
         return transactions.filter(tx => {
             // Apply type filter
             if (filterType !== 'all') {
-                const txType = tx.side || tx.type;
-                if (txType && txType.toLowerCase() !== filterType.toLowerCase()) {
+                const txType = (tx.side || tx.type || '').toLowerCase();
+                if (txType !== filterType.toLowerCase()) {
                     return false;
                 }
             }
 
             // Apply status filter
             if (filterStatus !== 'all') {
-                const txSuccess = tx.success || tx.status === 'success';
+                const txSuccess = tx.success || tx.status === 'success' || tx.status === 'completed';
                 if (filterStatus === 'success' && !txSuccess) return false;
                 if (filterStatus === 'failed' && txSuccess) return false;
             }
 
             // Apply timeframe filter
             if (filterTimeframe !== 'all') {
-                const txTime = new Date(tx.timestamp || tx.time).getTime();
+                const txTime = tx.timestamp || tx.time;
+                if (!txTime) return false;
+
+                const txDate = new Date(txTime).getTime();
                 const now = new Date().getTime();
                 let timeframeMs = 24 * 60 * 60 * 1000; // Default to 24h
 
-                if (filterTimeframe === '1h') timeframeMs = 60 * 60 * 1000;
+                if (filterTimeframe === '1h') timeframeMs = 1 * 60 * 60 * 1000;
                 if (filterTimeframe === '6h') timeframeMs = 6 * 60 * 60 * 1000;
                 if (filterTimeframe === '24h') timeframeMs = 24 * 60 * 60 * 1000;
                 if (filterTimeframe === '7d') timeframeMs = 7 * 24 * 60 * 60 * 1000;
 
-                if (now - txTime > timeframeMs) return false;
+                if (now - txDate > timeframeMs) return false;
             }
 
             return true;
@@ -257,20 +332,72 @@ const Transactions = () => {
             setFilterTimeframe(value);
             prepareChartData(transactions);
         }
+        if (filterName === 'source') setDataSource(value);
 
         // Reset to first page when filters change
         setCurrentPage(1);
     };
 
-    // Helper function to find source of transaction data
-    const tryOtherDataSource = () => {
-        if (dataSource === 'transactions') {
-            setDataSource('boosts');
-        } else if (dataSource === 'boosts') {
-            setDataSource('ranking');
-        } else {
-            setDataSource('transactions');
-        }
+    // Render a transaction row
+    const renderTransactionRow = (tx, index) => {
+        // Standardize transaction type/side
+        const txType = (tx.side || tx.type || '').toLowerCase();
+        const txTypeDisplay = txType.toUpperCase();
+        const isBuy = txType === 'buy';
+
+        // Standardize timestamp
+        const timestamp = tx.timestamp || tx.time || null;
+        const formattedTime = timestamp ? new Date(timestamp).toLocaleString() : 'Unknown time';
+
+        // Determine transaction success status
+        // Check multiple possible formats
+        const isSuccess = tx.success || tx.status === 'success' || tx.status === 'completed';
+
+        return (
+            <tr key={tx.signature || tx.txid || index} className={isSuccess ? '' : 'error-row'}>
+                <td>{formattedTime}</td>
+                <td>
+                    {tx.sourceId ? (
+                        <Link to={`/${tx.source === 'ranking' ? 'ranking' : 'boosts'}/${tx.sourceId}`} className="tx-link">
+                            {tx.sourceId.substring(0, 8)}...
+                        </Link>
+                    ) : (
+                        'Unknown'
+                    )}
+                </td>
+                <td className={isBuy ? 'buy-text' : 'sell-text'}>
+                    {txTypeDisplay}
+                </td>
+                <td>
+                    {typeof tx.size === 'number' ? tx.size.toFixed(6) : (typeof tx.amount === 'number' ? tx.amount.toFixed(6) : '0.000000')}
+                </td>
+                <td>
+                    ${typeof tx.price === 'number' ? tx.price.toFixed(2) : '0.00'}
+                </td>
+                <td>
+                    ${typeof tx.value === 'number' ? tx.value.toFixed(2) : '0.00'}
+                </td>
+                <td>
+                    <span className={`status-badge ${isSuccess ? 'success' : 'failed'}`}>
+                        {isSuccess ? 'SUCCESS' : 'FAILED'}
+                    </span>
+                </td>
+                <td>
+                    {(tx.signature || tx.txid) ? (
+                        <a
+                            href={`https://solscan.io/tx/${tx.signature || tx.txid}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="tx-link"
+                        >
+                            {(tx.signature || tx.txid).substring(0, 8)}...
+                        </a>
+                    ) : (
+                        'N/A'
+                    )}
+                </td>
+            </tr>
+        );
     };
 
     if (loading && transactions.length === 0) {
@@ -292,19 +419,16 @@ const Transactions = () => {
                 <div className="header-actions">
                     <button
                         className="button button-small"
-                        onClick={tryOtherDataSource}
-                        title="Try alternative data source if transactions aren't showing"
+                        onClick={() => fetchTransactions()}
+                        title="Refresh transactions"
                     >
-                        Try Other Source
-                    </button>
-                    <button className="button">
-                        Export Data
+                        Refresh Data
                     </button>
                 </div>
             </div>
 
             {debugMessage && (
-                <div className="debug-message">
+                <div className="info-message">
                     {debugMessage}
                 </div>
             )}
@@ -423,9 +547,6 @@ const Transactions = () => {
                     ) : (
                         <div className="empty-chart">
                             <p>No transaction data available for the selected timeframe</p>
-                            {dataSource !== 'transactions' && (
-                                <p className="info-message">Currently checking {dataSource} for transaction data</p>
-                            )}
                         </div>
                     )}
                 </div>
@@ -455,6 +576,19 @@ const Transactions = () => {
                                 <option value="failed">Failed</option>
                             </select>
                         </div>
+
+                        <div className="filters-group">
+                            <label>Data Source:</label>
+                            <select
+                                value={dataSource}
+                                onChange={(e) => handleFilterChange('source', e.target.value)}
+                            >
+                                <option value="all">All Sources</option>
+                                <option value="api">Transactions API</option>
+                                <option value="boosts">Volume Boosts</option>
+                                <option value="ranking">Ranking Jobs</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div className="transactions-table-wrapper">
@@ -463,12 +597,11 @@ const Transactions = () => {
                                 <div className="empty-icon">💼</div>
                                 <p>No transactions found</p>
                                 <p className="empty-subtext">Transactions will appear here once trading begins</p>
-                                <p className="data-source-info">Data source: {dataSource}</p>
                                 <button
                                     className="button button-small"
-                                    onClick={tryOtherDataSource}
+                                    onClick={fetchTransactions}
                                 >
-                                    Try Another Data Source
+                                    Refresh Transactions
                                 </button>
                             </div>
                         ) : filteredTransactions.length === 0 ? (
@@ -490,7 +623,7 @@ const Transactions = () => {
                                 <thead>
                                 <tr>
                                     <th>Time</th>
-                                    <th>Boost/Job ID</th>
+                                    <th>Source</th>
                                     <th>Type</th>
                                     <th>Amount</th>
                                     <th>Price</th>
@@ -500,54 +633,7 @@ const Transactions = () => {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {currentTransactions.map((tx, index) => {
-                                    const txTime = new Date(tx.timestamp || tx.time);
-                                    const txSuccess = tx.success || tx.status === 'success';
-                                    const txType = tx.side || tx.type;
-                                    const txId = tx.boostId || tx.jobId || 'Unknown';
-
-                                    return (
-                                        <tr key={index} className={!txSuccess ? 'error-row' : ''}>
-                                            <td>{txTime.toLocaleString()}</td>
-                                            <td>
-                                                {txId !== 'Unknown' ? (
-                                                    <Link to={`/${txId.startsWith('boost') ? 'boosts' : 'ranking'}/${txId}`} className="tx-link">
-                                                        {txId.substring(0, 8)}...
-                                                    </Link>
-                                                ) : 'Unknown'}
-                                            </td>
-                                            <td className={txType?.toLowerCase() === 'buy' ? 'buy-text' : 'sell-text'}>
-                                                {txType?.toUpperCase()}
-                                            </td>
-                                            <td>
-                                                {typeof tx.size === 'number' ? tx.size.toFixed(6) : (tx.amount ? tx.amount.toFixed(6) : '0.000000')}
-                                            </td>
-                                            <td>
-                                                ${typeof tx.price === 'number' ? tx.price.toFixed(2) : '0.00'}
-                                            </td>
-                                            <td>
-                                                ${typeof tx.value === 'number' ? tx.value.toFixed(2) : '0.00'}
-                                            </td>
-                                            <td>
-                                                    <span className={`status-badge ${txSuccess ? 'success' : 'failed'}`}>
-                                                        {txSuccess ? 'Success' : 'Failed'}
-                                                    </span>
-                                            </td>
-                                            <td>
-                                                {tx.signature || tx.txid ? (
-                                                    <a
-                                                        href={`https://solscan.io/tx/${tx.signature || tx.txid}`}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        className="tx-link"
-                                                    >
-                                                        {(tx.signature || tx.txid).substring(0, 8)}...
-                                                    </a>
-                                                ) : 'N/A'}
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
+                                {currentTransactions.map((tx, index) => renderTransactionRow(tx, index))}
                                 </tbody>
                             </table>
                         )}

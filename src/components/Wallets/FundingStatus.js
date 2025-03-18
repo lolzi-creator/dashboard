@@ -9,25 +9,39 @@ const FundingStatus = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
-    const [setStatusInterval] = useState(null);
+    const [statusInterval, setStatusInterval] = useState(null);
 
     useEffect(() => {
         fetchFundingStatus();
 
+        // Clean up any existing interval
+        return () => {
+            if (statusInterval) {
+                clearInterval(statusInterval);
+            }
+        };
+    }, [fundingId]);
+
+    // Effect for auto-refreshing status
+    useEffect(() => {
+        let interval = null;
+
         // Set up periodic refresh if status is processing
-        const interval = setInterval(() => {
-            if (funding && (funding.status === 'processing' || funding.status === 'pending')) {
+        if (funding && (funding.status === 'processing' || funding.status === 'pending')) {
+            interval = setInterval(() => {
                 setRefreshing(true);
                 fetchFundingStatus(false);
-            }
-        }, 10000); // Refresh every 10 seconds if processing
+            }, 10000); // Refresh every 10 seconds if processing
 
-        setStatusInterval(interval);
+            setStatusInterval(interval);
+        }
 
         return () => {
-            if (interval) clearInterval(interval);
+            if (interval) {
+                clearInterval(interval);
+            }
         };
-    }, [fundingId, funding?.status]);
+    }, [funding?.status]);
 
     const fetchFundingStatus = async (showLoading = true) => {
         if (!fundingId) {
@@ -62,6 +76,33 @@ const FundingStatus = () => {
         fetchFundingStatus(false);
     };
 
+    const determineActualStatus = (funding) => {
+        if (!funding || !funding.wallets || funding.wallets.length === 0) {
+            return funding?.status || 'unknown';
+        }
+
+        const completedCount = funding.wallets.filter(w => w.status === 'completed').length;
+        const failedCount = funding.wallets.filter(w => w.status === 'failed').length;
+        const totalCount = funding.wallets.length;
+
+        // If any wallet failed, but API reports success, correct it
+        if (failedCount > 0 && funding.status === 'completed') {
+            return 'completed_with_errors';
+        }
+
+        // If all wallets failed, but API doesn't report failure, correct it
+        if (failedCount === totalCount && funding.status !== 'failed') {
+            return 'failed';
+        }
+
+        // If all wallets completed successfully, but API doesn't report success
+        if (completedCount === totalCount && funding.status !== 'completed') {
+            return 'completed';
+        }
+
+        return funding.status;
+    };
+
     // Calculate progress and stats
     const calculateStats = () => {
         if (!funding || !funding.wallets) return { completedCount: 0, failedCount: 0, pendingCount: 0, totalCount: 0, progress: 0 };
@@ -71,8 +112,25 @@ const FundingStatus = () => {
         const pendingCount = funding.wallets.filter(w => w.status === 'pending').length;
         const totalCount = funding.wallets.length;
         const progress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+        const actualStatus = determineActualStatus(funding);
 
         return { completedCount, failedCount, pendingCount, totalCount, progress };
+    };
+
+    // Safe date formatter
+    const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
+
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return 'Invalid date';
+            }
+            return date.toLocaleString();
+        } catch (err) {
+            console.error("Error formatting date:", err);
+            return 'Error formatting date';
+        }
     };
 
     if (loading && !funding) {
@@ -127,6 +185,7 @@ const FundingStatus = () => {
     const { completedCount, failedCount, pendingCount, totalCount, progress } = calculateStats();
     const isProcessing = funding.status === 'processing' || funding.status === 'pending';
 
+    const actualStatus = determineActualStatus(funding);
     return (
         <div className="funding-status-page">
             <div className="page-header">
@@ -191,13 +250,13 @@ const FundingStatus = () => {
                     <div className="summary-details">
                         <h3>Status</h3>
                         <div className="summary-value">
-                            <span className={`status-badge ${funding.status}`}>
-                                {formatStatus(funding.status)}
+                            <span className={`status-badge ${actualStatus}`}>
+                            {formatStatus(actualStatus)}
                             </span>
                         </div>
                         {funding.completedAt && (
                             <div className="summary-subtext">
-                                Completed at: {new Date(funding.completedAt).toLocaleString()}
+                                Completed at: {formatDate(funding.completedAt)}
                             </div>
                         )}
                     </div>
@@ -267,9 +326,9 @@ const FundingStatus = () => {
                                         </button>
                                     </td>
                                     <td>
-                                            <span className={`status-badge ${wallet.status}`}>
-                                                {formatWalletStatus(wallet.status)}
-                                            </span>
+                                        <span className={`status-badge ${wallet.status}`}>
+                                            {formatWalletStatus(wallet.status)}
+                                        </span>
                                     </td>
                                     <td>
                                         {wallet.txid ? (
@@ -318,7 +377,7 @@ const formatStatus = (status) => {
         case 'failed':
             return 'Failed';
         default:
-            return status.charAt(0).toUpperCase() + status.slice(1);
+            return status ? (status.charAt(0).toUpperCase() + status.slice(1)) : 'Unknown';
     }
 };
 
@@ -332,7 +391,7 @@ const formatWalletStatus = (status) => {
         case 'failed':
             return 'Failed';
         default:
-            return status.charAt(0).toUpperCase() + status.slice(1);
+            return status ? (status.charAt(0).toUpperCase() + status.slice(1)) : 'Unknown';
     }
 };
 
